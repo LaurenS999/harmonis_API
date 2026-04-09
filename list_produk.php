@@ -2,48 +2,52 @@
 error_reporting(E_ERROR | E_PARSE);
 require_once 'connectDb.php';
 
-// 1. Ambil parameter dari request (GET atau POST)
-// Menggunakan $_GET agar filter bisa terlihat di URL atau mudah ditesting
-$searchNama  = isset($_GET['nama']) ? $_GET['nama'] : '';
-$idJenis     = isset($_GET['id_jenis']) ? $_GET['id_jenis'] : '';
-$idMerek     = isset($_GET['id_merek']) ? $_GET['id_merek'] : '';
+// 1. Tangkap parameter dari POST (sesuaikan dengan Volley getParams)
+// Jika tidak ada data, default diset ke '0' atau string kosong
+$search   = isset($_POST['nama']) ? $_POST['nama'] : '';
+$id_jenis = isset($_POST['id_jenis_produk']) ? $_POST['id_jenis_produk'] : '0';
+$id_merek = isset($_POST['id_merek']) ? $_POST['id_merek'] : '0';
 
-// 2. Query dasar
+// 2. Query Dasar
 $sql = "SELECT p.id_produk, p.nama_produk, p.harga_beli_produk, p.harga_jual_produk, 
-               p.jumlah_stok, p.deskripsi_lain_produk, p.foto_produk, p.id_jenis_produk, 
-               jp.nama_jenis_produk, jp.jenis_produk_hapus, p.id_merek, m.nama_merek, 
-               m.merek_hapus, p.produk_hapus 
+               p.jumlah_stok, p.deskripsi_lain_produk, p.foto_produk, 
+               p.id_jenis_produk, jp.nama_jenis_produk, 
+               p.id_merek, m.nama_merek 
         FROM produk p 
         INNER JOIN merek m ON p.id_merek = m.id_merek 
         INNER JOIN jenis_produk jp ON p.id_jenis_produk = jp.id_jenis_produk 
         WHERE p.produk_hapus = 0";
 
-// 3. Tambahkan kondisi filter secara dinamis
+// 3. Tambahkan filter secara dinamis
 $params = [];
 $types = "";
 
-if (!empty($searchNama)) {
+// Filter Nama Produk: Aktif jika tidak kosong
+if (!empty($search)) {
     $sql .= " AND p.nama_produk LIKE ?";
-    $params[] = "%$searchNama%"; // Mencari nama yang mengandung kata tersebut
-    $types .= "s"; // s = string
+    $params[] = "%$search%";
+    $types .= "s"; 
 }
 
-if (!empty($idJenis)) {
+// Filter Jenis Produk: Aktif jika bukan '0' dan tidak kosong
+if ($id_jenis != '0' && !empty($id_jenis)) {
     $sql .= " AND p.id_jenis_produk = ?";
-    $params[] = $idJenis;
-    $types .= "i"; // i = integer
+    $params[] = $id_jenis;
+    $types .= "i"; 
 }
 
-if (!empty($idMerek)) {
+// Filter Merek: Aktif jika bukan '0' dan tidak kosong
+if ($id_merek != '0' && !empty($id_merek)) {
     $sql .= " AND p.id_merek = ?";
-    $params[] = $idMerek;
-    $types .= "i"; // i = integer
+    $params[] = $id_merek;
+    $types .= "i"; 
 }
 
-// 4. Eksekusi Query menggunakan Prepared Statement (Keamanan)
+// 4. Eksekusi Query menggunakan Prepared Statement
 $stmt = $c->prepare($sql);
 
 if (!empty($params)) {
+    // Bind parameter secara dinamis
     $stmt->bind_param($types, ...$params);
 }
 
