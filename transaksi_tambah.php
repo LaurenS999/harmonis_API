@@ -21,7 +21,7 @@
 	else
 	{
 		$sql = "INSERT INTO transaksi(total_transaksi, total_pembayaran, kembalian, nama_pelanggan, alamat_pelanggan, tanggal_transaksi, transaksi_hapus, jenis_transaksi, no_telpon) VALUES ('". $total_transaksi ."','". $total_pembayaran ."','". $total_kembalian."','". $nama_pelanggan ."','". $alamat_pelanggan ."','". $tanggal_transasksi ."','0','". $jenis_transaksi ."','". $no_telpon ."')";
-
+		error_log($sql);
 		$result = $c->query($sql);
 		$newID = $c->insert_id;
 		$arr = array("result" => "OK", 
