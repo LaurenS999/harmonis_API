@@ -10,8 +10,6 @@
 		}
 			echo json_encode($array);
 		}
-		else {
-			echo json_encode(array('result'=> 'ERROR', 'message' => 'No data found'));
-			die();
-		}
+	echo json_encode($array);
+	$c->close();
 ?>
