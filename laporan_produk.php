@@ -1,15 +1,13 @@
 <?php 
+    header('Content-Type: application/json; charset=utf-8');
     error_reporting(E_ERROR | E_PARSE);
     require_once 'connectDb.php';
 
-    // 1. Ambil data POST (Gunakan ?? untuk default value jika input kosong)
-    // Hapus hardcode tanggal jika ingin dinamis dari Android
-    $tanggalawal = $_POST['tanggalawal'] ?? "2025-10-01";
-    $tanggalakhir = $_POST['tanggalakhir'] ?? "2025-10-30";
+    // 1. Gunakan input dari Android, berikan default jika kosong
+    $tanggalawal = $_POST['tanggalawal'] ?? "2025-01-01";
+    $tanggalakhir = $_POST['tanggalakhir'] ?? "2025-12-31";
 
-    $response = array();
-
-    // 2. Query Penjualan (Prepared Statement)
+    // 2. Query Penjualan (Gunakan Prepared Statements agar AMAN dari SQL Injection)
     $sql1 = "SELECT p.*, SUM(td.jumlah_produk) as jumlah_produk, SUM(td.total_harga) as subTotal 
              FROM transaksi t 
              INNER JOIN transaksi_detail td ON t.id_transaksi = td.id_transaksi 
@@ -28,7 +26,7 @@
         $dataPenjualan[] = $obj;
     }
 
-    // 3. Query Pembelian (Prepared Statement)
+    // 3. Query Pembelian
     $sql2 = "SELECT p.*, SUM(td.jumlah_produk) as jumlah_produk, SUM(td.total_harga) as subTotal 
              FROM transaksi t 
              INNER JOIN transaksi_detail td ON t.id_transaksi = td.id_transaksi 
@@ -43,15 +41,16 @@
     $res2 = $stmt2->get_result();
     
     $dataPembelian = array();
-    while ($obj = $res2->fetch_object()) {
-        $dataPembelian[] = $obj;
+    while ($obj2 = $res2->fetch_object()) {
+        $dataPembelian[] = $obj2;
     }
 
-    // 4. SELALU kirim struktur JSON yang sama agar Kotlin tidak Crash
+    // 4. SELALU kirim struktur yang sama (result, data, data2)
+    // Jika data kosong, isinya akan menjadi [] bukan hilang. Ini aman buat Kotlin.
     echo json_encode(array(
         'result' => 'OK',
-        'data' => $dataPenjualan,  // Jika kosong akan mengirim []
-        'data2' => $dataPembelian  // Jika kosong akan mengirim []
+        'data' => $dataPenjualan,
+        'data2' => $dataPembelian
     ));
 
     $stmt1->close();
