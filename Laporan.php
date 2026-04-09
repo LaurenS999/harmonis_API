@@ -1,40 +1,46 @@
 <?php 
-	error_reporting(E_ERROR | E_PARSE);
-	require_once 'connectDb.php';
+    header('Content-Type: application/json');
+    error_reporting(E_ERROR | E_PARSE);
+    require_once 'connectDb.php';
 
-	$tanggalawal = (string)$_POST['tanggalawal'];
-	$tanggalakhir = (string)$_POST['tanggalakhir'];
+    // Ambil data dari POST (Gunakan null coalescing agar tidak error)
+    $tanggalawal = $_POST['tanggalawal'] ?? "2025-01-01";
+    $tanggalakhir = $_POST['tanggalakhir'] ?? "2027-12-31";
 
-	$tanggalawal = "2025-10-01";
-	$tanggalakhir = "2027-10-30";
+    // 1. Ambil Penjualan
+    $sql = "SELECT IFNULL(SUM(Total_transaksi),0) AS total_transaksi, 
+                   COUNT(id_transaksi) as jumlah_transaksi 
+            FROM transaksi 
+            WHERE jenis_transaksi = 'Penjualan' 
+            AND tanggal_transaksi BETWEEN ? AND ?";
+            
+    $stmt1 = $c->prepare($sql);
+    $stmt1->bind_param("ss", $tanggalawal, $tanggalakhir);
+    $stmt1->execute();
+    $res1 = $stmt1->get_result();
+    $dataPenjualan = $res1->fetch_object();
 
-	//Dapatin List transaksi penjualan
-	$sql = "SELECT IFNULL(SUM(Total_transaksi),0) AS 'total_transaksi', COUNT(id_transaksi) as 'jumlah_transasksi' FROM transaksi WHERE jenis_transaksi = 'Penjualan' AND tanggal_transaksi BETWEEN '". $tanggalawal ."' AND '". $tanggalakhir ."'";
-	$result = $c->query($sql);
-	$LaporonPenjualan = array();
-	$LaporanPembelian = array();
-	if ($result->num_rows > 0) {
-		while ($obj = $result -> fetch_object()) {
-			$LaporonPenjualan[] = $obj;
-		}		
-	}
-	// //Dapatin List transaksi ppembelian
-	$sql2 = "SELECT IFNULL(SUM(Total_transaksi),0) AS 'total_transaksi', COUNT(id_transaksi) as 'jumlah_transasksi' FROM transaksi WHERE jenis_transaksi = 'Pembelian' AND tanggal_transaksi BETWEEN '". $tanggalawal ."' AND '". $tanggalakhir ."'";
-	$result2 = $c->query($sql2);
-	if ($result2->num_rows > 0) {
-		while($obj2 = $result2 ->fetch_object()) {
-			$LaporanPembelian[] = $obj2;
-		}
-	}
-	
-	if(count($LaporonPenjualan) == 0 && count($LaporanPembelian) == 0)
-	{
-		echo json_encode(array('result' => 'ERROR', 'sqlPenjualan' => $sql, 'sqlPembelian'=> $sql2 ,'Message' => "Data not Found"));	
-	}
-	else
-	{
-		echo json_encode(array('result' => 'OK', 'data' => $LaporonPenjualan, 'data2' => $LaporanPembelian));
-	}
+    // 2. Ambil Pembelian
+    $sql2 = "SELECT IFNULL(SUM(Total_transaksi),0) AS total_transaksi, 
+                    COUNT(id_transaksi) as jumlah_transaksi 
+             FROM transaksi 
+             WHERE jenis_transaksi = 'Pembelian' 
+             AND tanggal_transaksi BETWEEN ? AND ?";
+             
+    $stmt2 = $c->prepare($sql2);
+    $stmt2->bind_param("ss", $tanggalawal, $tanggalakhir);
+    $stmt2->execute();
+    $res2 = $stmt2->get_result();
+    $dataPembelian = $res2->fetch_object();
 
+    // Kirim respon dengan struktur yang SELALU SAMA
+    echo json_encode(array(
+        'status' => 'OK',
+        'penjualan' => $dataPenjualan,
+        'pembelian' => $dataPembelian
+    ));
 
+    $stmt1->close();
+    $stmt2->close();
+    $c->close();
 ?>
