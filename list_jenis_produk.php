@@ -11,7 +11,7 @@
 			echo json_encode($array);
 		}
 		else {
-			echo json_encode('No data found');
+			echo json_encode(array('result'=> 'ERROR', 'message' => 'No data found'));
 			die();
 		}
 ?>
