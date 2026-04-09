@@ -5,7 +5,7 @@
 
     // 1. Gunakan input dari Android, berikan default jika kosong
     $tanggalawal = $_POST['tanggalawal'] ?? "2025-01-01";
-    $tanggalakhir = $_POST['tanggalakhir'] ?? "2025-12-31";
+    $tanggalakhir = $_POST['tanggalakhir'] ?? "2027-12-31";
 
     // 2. Query Penjualan (Gunakan Prepared Statements agar AMAN dari SQL Injection)
     $sql1 = "SELECT p.*, SUM(td.jumlah_produk) as jumlah_produk, SUM(td.total_harga) as subTotal 
