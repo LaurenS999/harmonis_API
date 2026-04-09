@@ -1,5 +1,4 @@
 <?php 
-    header('Content-Type: application/json; charset=utf-8');
     error_reporting(E_ERROR | E_PARSE);
     require_once 'connectDb.php';
 
