@@ -22,6 +22,7 @@
         // A. Insert ke tabel transaksi_detail
         $stmt1 = $c->prepare("INSERT INTO transaksi_detail(id_transaksi, id_produk, jumlah_produk, total_harga) VALUES (?, ?, ?, ?)");
         $stmt1->bind_param("iiii", $idTransaksi, $idProduk, $jumlah, $total);
+        error_log($stm1)
         
         if (!$stmt1->execute()) {
             throw new Exception("Gagal menyimpan detail transaksi.");
@@ -40,7 +41,7 @@
 
         $stmt2 = $c->prepare($sqlStok);
         $stmt2->bind_param("ii", $jumlah, $idProduk);
-
+         error_log($stmt2)
         if (!$stmt2->execute()) {
             throw new Exception("Gagal memperbarui stok produk.");
         }
