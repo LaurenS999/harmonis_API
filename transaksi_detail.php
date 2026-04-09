@@ -1,10 +1,6 @@
 <?php
 	error_reporting(E_ERROR | E_PARSE);
-	$c = new mysqli("localhost", "root", "", "harmonis");
-	if($c->connect_errno) {
-		echo json_encode(array('result'=> 'ERROR', 'message' => 'Gagal Menghubungkan Ke Database'));
-		die();
-	}
+	require_once 'connectDb.php';
 
 	$id = (string) $_POST['id_transaksi'];
 	$sql = "SELECT * FROM transaksi t left join transaksi_detail td on t.id_transaksi=td.id_transaksi left join produk p on p.id_produk = td.id_produk where t.id_transaksi = ". $id;

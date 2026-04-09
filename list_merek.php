@@ -1,6 +1,6 @@
 <?php
 	error_reporting(E_ERROR | E_PARSE);
-	require_once 'koneksi.php';
+	require_once 'connectDb.php';
 	
 	$sql = "SELECT * FROM merek Where merek_hapus=0 ORDER BY nama_merek ASC";
 	
