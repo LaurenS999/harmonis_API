@@ -8,12 +8,9 @@
 	if ($result->num_rows > 0) {
 		while ($obj = $result -> fetch_object()) {
 			$transaksi[] = $obj;
-
+		}
 	}
-		echo json_encode($transaksi);
-	}
-	else {
-		echo json_encode('No data found');
-		die();
-	}
+	echo json_encode($array);
+	
+	$c->close();
 ?>
