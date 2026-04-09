@@ -26,6 +26,7 @@
 		{
 			$sql = "UPDATE produk SET produk_hapus = 1 WHERE id_produk = ". $id;
 		}
+		error_log($sql);
 
 		$result = $c->query($sql);
 		echo json_encode($result);
