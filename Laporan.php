@@ -6,7 +6,7 @@
 	$tanggalakhir = (string)$_POST['tanggalakhir'];
 
 	$tanggalawal = "2025-10-01";
-	$tanggalakhir = "2025-10-30";
+	$tanggalakhir = "2027-10-30";
 
 	//Dapatin List transaksi penjualan
 	$sql = "SELECT IFNULL(SUM(Total_transaksi),0) AS 'total_transaksi', COUNT(id_transaksi) as 'jumlah_transasksi' FROM transaksi WHERE jenis_transaksi = 'Penjualan' AND tanggal_transaksi BETWEEN '". $tanggalawal ."' AND '". $tanggalakhir ."'";
