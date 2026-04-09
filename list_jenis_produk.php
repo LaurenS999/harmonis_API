@@ -4,14 +4,13 @@
 	$sql = "SELECT * FROM jenis_produk WHERE jenis_produk_hapus = 0 ORDER BY nama_jenis_produk ASC";
 	$result = $c->query($sql);
 	$array = array();
-	if ($result->num_rows > 0) {
-		while ($obj = $result -> fetch_object()) {
-			$array[] = $obj;
-		}
-			echo json_encode($array);
-		}
-		else {
-			echo json_encode(array('result'=> 'ERROR', 'message' => 'No data found'));
-			die();
-		}
+
+	if ($result && $result->num_rows > 0) {
+	    while ($obj = $result->fetch_object()) {
+	        $array[] = $obj;
+	    }
+	}
+	echo json_encode($array);
+	
+	$c->close();
 ?>
