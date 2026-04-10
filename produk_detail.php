@@ -13,7 +13,7 @@
 			echo json_encode($array[0]);
 	}
 	else {
-		echo json_encode('No data found');
+		echo json_encode($array[]);
 		die();
 	}
 ?>
