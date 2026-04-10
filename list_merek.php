@@ -13,6 +13,7 @@ if ($result && $result->num_rows > 0) {
     }
     echo json_encode($array);
 } else {
-    echo json_encode($array);
+   echo json_encode([]);
+    die();
 }
 ?>
