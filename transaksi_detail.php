@@ -46,9 +46,13 @@ if ($result->num_rows > 0) {
             $produk[$i]['nama_produk'] = $obj['nama_produk'];
             $produk[$i]['harga_beli_produk'] = (int)$obj['harga_beli_produk'];
             $produk[$i]['harga_jual_produk'] = (int)$obj['harga_jual_produk'];
-            $produk[$i]['deskripsi_lain_produk'] = $obj['deskripsi_lain_produk'];
             $produk[$i]['jumlah_stok'] = (int)$obj['jumlah_stok'];
+            $produk[$i]['deskripsi_lain_produk'] = $obj['deskripsi_lain_produk'];
             $produk[$i]['foto_produk'] = $obj['foto_produk'];
+            $produk[$i]['id_jenis_produk'] = (int)$obj['id_jenis_produk'];
+            $produk[$i]['id_merek'] = (int)$obj['id_merek'];
+            $produk[$i]['produk_hapus'] = (int)$obj['produk_hapus'];
+                
             $i++;
         }
     }
